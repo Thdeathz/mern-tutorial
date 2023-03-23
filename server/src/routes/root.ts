@@ -1,10 +1,12 @@
-import express, { Request, Response, Router } from 'express'
+import express, { RequestHandler } from 'express'
 import path from 'path'
 
-const router: Router = express.Router()
+const router = express.Router()
 
-router.get('^/$|/index(.html)?', (req: Request, res: Response) => {
+const handleNavigateToIndexPage: RequestHandler = (req, res) => {
   res.sendFile(path.join(__dirname, '../../views/index.html'))
-})
+}
+
+router.get('^/$|/index(.html)?', handleNavigateToIndexPage)
 
 export default router
