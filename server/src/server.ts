@@ -2,14 +2,16 @@ import dotenv from 'dotenv-safe'
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
-import rootRoutes from '~/routes/root'
-import notFoundRoutes from '~/routes/404'
 import { logEvents, logger } from './middleware/logger'
 import { errorHandler } from './middleware/errorHandler'
 import cookieParser from 'cookie-parser'
 import { corsOptions } from './config/corsOptions'
 import { connectDB } from './config/dbConnect'
 import mongoose from 'mongoose'
+import rootRoutes from '~/routes/root'
+import notFoundRoutes from '~/routes/404'
+import userRoutes from '~/routes/userRoutes'
+import noteRoutes from '~/routes/noteRoutes'
 
 dotenv.config()
 const app = express()
@@ -28,6 +30,8 @@ app.use('/', express.static(path.join(__dirname, '../public')))
 
 /* ROUTES */
 app.use('/', rootRoutes)
+app.use('/users', userRoutes)
+app.use('/notes', noteRoutes)
 app.all('*', notFoundRoutes)
 
 app.use(errorHandler)
