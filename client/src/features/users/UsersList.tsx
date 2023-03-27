@@ -3,14 +3,23 @@ import User from './User'
 import { useGetUsersQuery } from './usersApiSlice'
 
 const UsersList = () => {
-  const { data: users, isLoading, isSuccess, isError } = useGetUsersQuery([])
+  const {
+    data: users,
+    isLoading,
+    isSuccess,
+    isError
+  } = useGetUsersQuery(undefined, {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true
+  })
 
   let content: JSX.Element = <></>
 
   if (isLoading) content = <p>Loading...</p>
 
   if (isError) {
-    content = <p className={'errmsg'}>Fetching error</p>
+    content = <p className={'errmsg'}>{`Fetching error ><!`}</p>
   }
 
   if (isSuccess) {

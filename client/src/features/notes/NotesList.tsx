@@ -3,14 +3,23 @@ import Note from './Note'
 import { useGetNotesQuery } from './notesApiSlice'
 
 const NotesList = () => {
-  const { data: notes, isLoading, isSuccess, isError } = useGetNotesQuery([])
+  const {
+    data: notes,
+    isLoading,
+    isSuccess,
+    isError
+  } = useGetNotesQuery(undefined, {
+    pollingInterval: 15000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true
+  })
 
   let content: JSX.Element = <></>
 
   if (isLoading) content = <p>Loading...</p>
 
   if (isError) {
-    content = <p className={'errmsg'}>Fetching error</p>
+    content = <p className={'errmsg'}>{`Fetching error ><!`}</p>
   }
 
   if (isSuccess) {

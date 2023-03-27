@@ -1,15 +1,15 @@
 import { createEntityAdapter, createSelector } from '@reduxjs/toolkit'
+import { resolveAny } from 'dns'
 import { apiSlice } from '~/app/api/apiSlice'
 import { RootState } from '~/app/store'
+import { ROLE } from '~/config/roles'
 
 export interface User {
   id: string
   username: string
-  roles: string[]
+  roles: ROLE[]
   active: boolean
 }
-
-type ResponseData = User & { _id: string }
 
 const usersApdapter = createEntityAdapter<User>({})
 
@@ -22,8 +22,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: '/users',
         validateStatus: (response, result) => response.status === 200 && !result.isError
       }),
-      keepUnusedDataFor: 5,
-      transformResponse: (responseData: ResponseData[]) => {
+      transformResponse: (responseData: (User & { _id: string })[]) => {
         const loaderUsers: User[] = responseData.map(user => {
           user.id = user._id
           return user as User
@@ -39,11 +38,46 @@ export const usersApiSlice = apiSlice.injectEndpoints({
           ]
         } else return [{ type: 'User', id: 'LIST' }]
       }
+    }),
+    addNewUser: builder.mutation({
+      query: (initialUserData: Omit<User, 'id' | 'active'> & { password: string }) => ({
+        url: '/users',
+        method: 'POST',
+        body: {
+          ...initialUserData
+        }
+      }),
+      invalidatesTags: [{ type: 'User', id: 'LIST' }]
+    }),
+    updateUser: builder.mutation({
+      query: (initialUserData: User & { password?: string }) => ({
+        url: '/users',
+        method: 'PATCH',
+        body: {
+          ...initialUserData
+        }
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'User', id: arg.id }]
+    }),
+    deleteUser: builder.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: '/users',
+        method: 'DELETE',
+        body: {
+          id
+        }
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'User', id: arg.id }]
     })
   })
 })
 
-export const { useGetUsersQuery } = usersApiSlice
+export const {
+  useGetUsersQuery,
+  useAddNewUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation
+} = usersApiSlice
 
 export const selectUsersResult = usersApiSlice.endpoints.getUsers.select([])
 

@@ -8,12 +8,10 @@ export interface Note {
   username: string
   title: string
   text: string
-  completed: string
+  completed: boolean
   createdAt: string
   updatedAt: string
 }
-
-type ResponseData = Note & { _id: string }
 
 const notesApdapter = createEntityAdapter<Note>({
   sortComparer: (a, b) =>
@@ -29,8 +27,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
         url: '/notes',
         validateStatus: (response, result) => response.status === 200 && !result.isError
       }),
-      keepUnusedDataFor: 5,
-      transformResponse: (responseData: ResponseData[]) => {
+      transformResponse: (responseData: (Note & { _id: string })[]) => {
         const loaderNotes: Note[] = responseData.map(note => {
           note.id = note._id
           return note as Note
@@ -46,11 +43,46 @@ export const notesApiSlice = apiSlice.injectEndpoints({
           ]
         } else return [{ type: 'Note', id: 'LIST' }]
       }
+    }),
+    addNewNote: builder.mutation({
+      query: (initialNote: Pick<Note, 'user' | 'title' | 'text'>) => ({
+        url: '/notes',
+        method: 'POST',
+        body: {
+          ...initialNote
+        }
+      }),
+      invalidatesTags: [{ type: 'Note', id: 'LIST' }]
+    }),
+    updateNote: builder.mutation({
+      query: (initialNote: Omit<Note, 'username' | 'createdAt' | 'updatedAt'>) => ({
+        url: '/notes',
+        method: 'PATCH',
+        body: {
+          ...initialNote
+        }
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Note', id: arg.id }]
+    }),
+    deleteNote: builder.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: '/notes',
+        method: 'DELETE',
+        body: {
+          id
+        }
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Note', id: arg.id }]
     })
   })
 })
 
-export const { useGetNotesQuery } = notesApiSlice
+export const {
+  useGetNotesQuery,
+  useAddNewNoteMutation,
+  useUpdateNoteMutation,
+  useDeleteNoteMutation
+} = notesApiSlice
 
 export const selectNotesResult = notesApiSlice.endpoints.getNotes.select([])
 

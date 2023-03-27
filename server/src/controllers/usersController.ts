@@ -76,7 +76,7 @@ export const updateUser: RequestHandler = asyncHandler(async (req, res) => {
   // Check if user already existed
   const userExisted = await User.findOne({ username }).lean().exec()
   // Allow updates to the original user
-  if (userExisted && userExisted._id !== id) {
+  if (userExisted && userExisted?._id.toString() !== id) {
     res.status(409).json({ message: 'Duplicate username' })
     return
   }
