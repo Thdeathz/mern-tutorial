@@ -12,6 +12,7 @@ import rootRoutes from '~/routes/root'
 import notFoundRoutes from '~/routes/404'
 import userRoutes from '~/routes/userRoutes'
 import noteRoutes from '~/routes/noteRoutes'
+import authRoutes from '~/routes/authRoutes'
 
 dotenv.config()
 const app = express()
@@ -30,6 +31,7 @@ app.use('/', express.static(path.join(__dirname, '../public')))
 
 /* ROUTES */
 app.use('/', rootRoutes)
+app.use('/auth', authRoutes)
 app.use('/users', userRoutes)
 app.use('/notes', noteRoutes)
 app.all('*', notFoundRoutes)

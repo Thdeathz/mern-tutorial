@@ -1,4 +1,4 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express'
+import { ErrorRequestHandler } from 'express'
 import { logEvents } from './logger'
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {

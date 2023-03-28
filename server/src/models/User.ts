@@ -1,9 +1,11 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
 
+export type ROLE = ['Admin' | 'Employee' | 'Manager']
+
 export interface UserType extends Document {
   username: string
   password: string
-  roles: string[]
+  roles: ROLE[]
   active: boolean
 }
 
