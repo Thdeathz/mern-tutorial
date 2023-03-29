@@ -6,7 +6,9 @@ import NewNoteForm from './NewNoteForm'
 const NewNote = () => {
   const users = useAppSelector(selectAllUsers)
 
-  const content: JSX.Element = users ? <NewNoteForm users={users} /> : <p>Loading...</p>
+  if (!users?.length) return <p>Not Current Available</p>
+
+  const content: JSX.Element = <NewNoteForm users={users} />
 
   return content
 }
