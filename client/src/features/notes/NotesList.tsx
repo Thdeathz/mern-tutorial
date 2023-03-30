@@ -1,8 +1,12 @@
+import { EntityId } from '@reduxjs/toolkit'
 import React from 'react'
+import useAuth from '~/hooks/useAuth'
 import Note from './Note'
 import { useGetNotesQuery } from './notesApiSlice'
 
 const NotesList = () => {
+  const { username, isManager, isAdmin } = useAuth()
+
   const {
     data: notes,
     isLoading,
@@ -24,10 +28,17 @@ const NotesList = () => {
   }
 
   if (isSuccess) {
-    const { ids } = notes
+    const { ids, entities } = notes
 
-    const tableContent: JSX.Element | JSX.Element[] = ids?.length ? (
-      ids.map(noteId => <Note key={noteId} noteId={noteId} />)
+    let filteredIds: EntityId[] = []
+    if (isManager || isAdmin) {
+      filteredIds = [...ids]
+    } else {
+      filteredIds = ids.filter(noteId => entities[noteId]?.username === username)
+    }
+
+    const tableContent: JSX.Element | JSX.Element[] = filteredIds?.length ? (
+      filteredIds.map(noteId => <Note key={noteId} noteId={noteId} />)
     ) : (
       <></>
     )

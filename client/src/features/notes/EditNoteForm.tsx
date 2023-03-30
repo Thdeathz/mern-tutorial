@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { User } from '../users/usersApiSlice'
 import { Note, useDeleteNoteMutation, useUpdateNoteMutation } from './notesApiSlice'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '~/hooks/useAuth'
 
 type PropsType = {
   note: Note
@@ -11,6 +12,8 @@ type PropsType = {
 }
 
 const EditNoteForm = ({ note, users }: PropsType) => {
+  const { isManager, isAdmin } = useAuth()
+
   const [updateNote, { isLoading, isSuccess, isError, error }] = useUpdateNoteMutation()
 
   const [deleteNote, { isSuccess: isDelSuccess, isError: isDelError, error: delerror }] =
@@ -81,6 +84,15 @@ const EditNoteForm = ({ note, users }: PropsType) => {
 
   const errContent = ((error as any)?.data?.message || (delerror as any)?.data?.message) ?? ''
 
+  let deleteButton: JSX.Element = <></>
+  if (isManager || isAdmin) {
+    deleteButton = (
+      <button className="icon-button" title="Delete" onClick={onDeleteNoteClicked}>
+        <FontAwesomeIcon icon={faTrashCan} />
+      </button>
+    )
+  }
+
   const content = (
     <>
       <p className={errClass}>{errContent}</p>
@@ -97,9 +109,7 @@ const EditNoteForm = ({ note, users }: PropsType) => {
             >
               <FontAwesomeIcon icon={faSave} />
             </button>
-            <button className="icon-button" title="Delete" onClick={onDeleteNoteClicked}>
-              <FontAwesomeIcon icon={faTrashCan} />
-            </button>
+            {deleteButton}
           </div>
         </div>
         <label className="form__label" htmlFor="note-title">
