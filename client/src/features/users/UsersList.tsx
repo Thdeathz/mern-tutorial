@@ -7,8 +7,9 @@ const UsersList = () => {
     data: users,
     isLoading,
     isSuccess,
-    isError
-  } = useGetUsersQuery(undefined, {
+    isError,
+    error
+  } = useGetUsersQuery('usersList', {
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
@@ -19,7 +20,7 @@ const UsersList = () => {
   if (isLoading) content = <p>Loading...</p>
 
   if (isError) {
-    content = <p className={'errmsg'}>{`Fetching error ><!`}</p>
+    content = <p className={'errmsg'}>{(error as any)?.data?.message}</p>
   }
 
   if (isSuccess) {

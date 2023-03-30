@@ -9,7 +9,7 @@ const USER_REGEX: RegExp = /^[A-z]{3,20}$/
 const PWD_REGEX: RegExp = /^[A-z0-9!@#$%]{4,12}$/
 
 const NewUserForm = () => {
-  const [addNewUser, { isLoading, isSuccess, isError }] = useAddNewUserMutation()
+  const [addNewUser, { isLoading, isSuccess, isError, error }] = useAddNewUserMutation()
 
   const navigate = useNavigate()
 
@@ -68,7 +68,7 @@ const NewUserForm = () => {
 
   const content = (
     <>
-      <p className={errClass}>{`Fetching error ><!`}</p>
+      <p className={errClass}>{(error as any)?.data?.message}</p>
 
       <form className="form" onSubmit={onSaveUserClicked}>
         <div className="form__title-row">

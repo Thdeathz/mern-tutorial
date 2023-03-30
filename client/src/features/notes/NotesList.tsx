@@ -7,8 +7,9 @@ const NotesList = () => {
     data: notes,
     isLoading,
     isSuccess,
-    isError
-  } = useGetNotesQuery(undefined, {
+    isError,
+    error
+  } = useGetNotesQuery('notesList', {
     pollingInterval: 15000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true
@@ -19,7 +20,7 @@ const NotesList = () => {
   if (isLoading) content = <p>Loading...</p>
 
   if (isError) {
-    content = <p className={'errmsg'}>{`Fetching error ><!`}</p>
+    content = <p className={'errmsg'}>{(error as any)?.data?.message}</p>
   }
 
   if (isSuccess) {

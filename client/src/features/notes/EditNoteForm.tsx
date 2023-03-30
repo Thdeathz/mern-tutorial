@@ -11,9 +11,10 @@ type PropsType = {
 }
 
 const EditNoteForm = ({ note, users }: PropsType) => {
-  const [updateNote, { isLoading, isSuccess, isError }] = useUpdateNoteMutation()
+  const [updateNote, { isLoading, isSuccess, isError, error }] = useUpdateNoteMutation()
 
-  const [deleteNote, { isSuccess: isDelSuccess, isError: isDelError }] = useDeleteNoteMutation()
+  const [deleteNote, { isSuccess: isDelSuccess, isError: isDelError, error: delerror }] =
+    useDeleteNoteMutation()
 
   const navigate = useNavigate()
 
@@ -78,7 +79,7 @@ const EditNoteForm = ({ note, users }: PropsType) => {
   const validTitleClass = !title ? 'form__input--incomplete' : ''
   const validTextClass = !text ? 'form__input--incomplete' : ''
 
-  const errContent = `Fetching error ><! Please try again later.`
+  const errContent = ((error as any)?.data?.message || (delerror as any)?.data?.message) ?? ''
 
   const content = (
     <>

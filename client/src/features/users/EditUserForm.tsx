@@ -13,9 +13,10 @@ const USER_REGEX: RegExp = /^[A-z]{3,20}$/
 const PWD_REGEX: RegExp = /^[A-z0-9!@#$%]{4,12}$/
 
 const EditUserForm = ({ user }: PropsType) => {
-  const [updateUser, { isLoading, isSuccess, isError }] = useUpdateUserMutation()
+  const [updateUser, { isLoading, isSuccess, isError, error }] = useUpdateUserMutation()
 
-  const [deleteUser, { isSuccess: isDelSuccess, isError: isDelError }] = useDeleteUserMutation()
+  const [deleteUser, { isSuccess: isDelSuccess, isError: isDelError, error: delerror }] =
+    useDeleteUserMutation()
 
   const navigate = useNavigate()
 
@@ -72,12 +73,13 @@ const EditUserForm = ({ user }: PropsType) => {
     canSave = [roles.length, validUsername].every(Boolean) && !isLoading
   }
 
-  const errClass: string = isError ? 'errmsg' : 'offscreen'
+  const errClass: string = isError || isDelError ? 'errmsg' : 'offscreen'
   const validUserClass: string = !validUsername ? 'form__input--incomplete' : ''
   const validPwdClass: string = password && !validPassword ? 'form__input--incomplete' : ''
   const validRolesClass: string = !Boolean(roles.length) ? 'form__input--incomplete' : ''
 
-  const errContent: string = `Fetching error ><! Please try again later.`
+  const errContent: string =
+    ((error as any)?.data?.message || (delerror as any)?.data?.message) ?? ''
 
   const options: JSX.Element | JSX.Element[] = Object.values(ROLES).map(role => {
     return (

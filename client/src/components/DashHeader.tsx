@@ -20,7 +20,7 @@ const DashHeader = () => {
 
   if (isLoading) return <p>Logging Out...</p>
 
-  if (isError) return <p>{`Fetching error ><!`}</p>
+  if (isError) return <p>Error: {(error as any).data?.message}</p>
 
   let dashClass: string = ''
   if (!DASH_REGEX.test(pathname) && !NOTES_REGEX.test(pathname) && !USERS_REGEX.test(pathname))

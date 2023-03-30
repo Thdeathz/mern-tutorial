@@ -10,7 +10,7 @@ type PropsType = {
 }
 
 const NewNoteForm = ({ users }: PropsType) => {
-  const [addNewNote, { isLoading, isSuccess, isError }] = useAddNewNoteMutation()
+  const [addNewNote, { isLoading, isSuccess, isError, error }] = useAddNewNoteMutation()
 
   const navigate = useNavigate()
 
@@ -54,7 +54,7 @@ const NewNoteForm = ({ users }: PropsType) => {
 
   const content: JSX.Element = (
     <>
-      <p className={errClass}>{`Fetching error ><!`}</p>
+      <p className={errClass}>{(error as any)?.data?.message}</p>
 
       <form className="form" onSubmit={onSaveNoteClicked}>
         <div className="form__title-row">
