@@ -1,8 +1,9 @@
-import { EntityId } from '@reduxjs/toolkit'
 import React from 'react'
+import { EntityId } from '@reduxjs/toolkit'
 import useAuth from '~/hooks/useAuth'
 import Note from './Note'
 import { useGetNotesQuery } from './notesApiSlice'
+import PulseLoader from 'react-spinners/PulseLoader'
 
 const NotesList = () => {
   const { username, isManager, isAdmin } = useAuth()
@@ -21,7 +22,7 @@ const NotesList = () => {
 
   let content: JSX.Element = <></>
 
-  if (isLoading) content = <p>Loading...</p>
+  if (isLoading) content = <PulseLoader color="#FFF" />
 
   if (isError) {
     content = <p className={'errmsg'}>{(error as any)?.data?.message}</p>

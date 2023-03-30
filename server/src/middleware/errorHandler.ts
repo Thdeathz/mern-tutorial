@@ -13,6 +13,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   res.status(status)
 
   res.json({
-    message: err.message
+    message: err.message,
+    isError: true
   })
 }

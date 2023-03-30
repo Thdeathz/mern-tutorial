@@ -20,8 +20,8 @@ const userScheme: Schema<UserType> = new mongoose.Schema({
   },
   roles: [
     {
-      type: String,
-      default: 'Employee'
+      type: [String],
+      default: ['Employee']
     }
   ],
   active: {

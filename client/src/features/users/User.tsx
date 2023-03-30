@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { EntityId } from '@reduxjs/toolkit'
-import { selectUserById } from './usersApiSlice'
-import { useAppSelector } from '~/hooks/useRedux'
+import { useGetUsersQuery } from './usersApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
@@ -11,7 +10,11 @@ type PropsType = {
 }
 
 const User = ({ userId }: PropsType) => {
-  const user = useAppSelector(state => selectUserById(state, userId))
+  const { user } = useGetUsersQuery('usersList', {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[userId]
+    })
+  })
 
   const navigate = useNavigate()
 
@@ -38,4 +41,6 @@ const User = ({ userId }: PropsType) => {
   }
 }
 
-export default User
+const memorizedUser = memo(User)
+
+export default memorizedUser

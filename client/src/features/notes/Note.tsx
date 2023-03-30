@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { EntityId } from '@reduxjs/toolkit'
 import { useNavigate } from 'react-router-dom'
-import { useAppSelector } from '~/hooks/useRedux'
-import { selectNoteById } from './notesApiSlice'
+import { useGetNotesQuery } from './notesApiSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 
@@ -11,7 +10,11 @@ type PropsType = {
 }
 
 const Note = ({ noteId }: PropsType) => {
-  const note = useAppSelector(state => selectNoteById(state, noteId))
+  const { note } = useGetNotesQuery('notesList', {
+    selectFromResult: ({ data }) => ({
+      note: data?.entities[noteId]
+    })
+  })
 
   const navigate = useNavigate()
 
@@ -52,4 +55,6 @@ const Note = ({ noteId }: PropsType) => {
   } else return <></>
 }
 
-export default Note
+const memorizedNote = memo(Note)
+
+export default memorizedNote

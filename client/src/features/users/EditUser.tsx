@@ -1,16 +1,20 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useAppSelector } from '~/hooks/useRedux'
-import { selectUserById } from './usersApiSlice'
+import { useGetUsersQuery } from './usersApiSlice'
 import { EntityId } from '@reduxjs/toolkit'
 import EditUserForm from './EditUserForm'
+import { PulseLoader } from 'react-spinners'
 
 const EditUser = () => {
   const { id } = useParams()
 
-  const user = useAppSelector(state => selectUserById(state, id as EntityId))
+  const { user } = useGetUsersQuery('usersList', {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[id as EntityId]
+    })
+  })
 
-  const content: JSX.Element = user ? <EditUserForm user={user} /> : <p>Loading...</p>
+  const content: JSX.Element = user ? <EditUserForm user={user} /> : <PulseLoader color="#FFF" />
 
   return content
 }

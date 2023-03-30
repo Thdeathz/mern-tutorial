@@ -30,13 +30,16 @@ export const createNewUser: RequestHandler = asyncHandler(async (req, res) => {
   const { username, password, roles } = <UserData>req.body
 
   // Confirm data
-  if (!username || !password || !roles) {
+  if (!username || !password) {
     res.status(400).json({ message: 'Please provide all required fields' })
     return
   }
 
   // Check if user already existed
-  const userExisted = await User.findOne({ username }).lean().exec()
+  const userExisted = await User.findOne({ username })
+    .collation({ locale: 'en', strength: 2 })
+    .lean()
+    .exec()
   if (userExisted) {
     res.status(409).json({ message: 'User already existed' })
     return
@@ -44,7 +47,10 @@ export const createNewUser: RequestHandler = asyncHandler(async (req, res) => {
 
   // Hash password
   const hashedPassword: string = await bcrypt.hash(<string>password, 10)
-  const userObject: UserData = { username, password: hashedPassword, roles, active: true }
+  const userObject: UserData =
+    !Array.isArray(roles) || !roles.length
+      ? { username, password: hashedPassword }
+      : { username, password: hashedPassword, roles }
 
   // Create new user
   const user = await User.create(userObject)
@@ -74,7 +80,10 @@ export const updateUser: RequestHandler = asyncHandler(async (req, res) => {
   }
 
   // Check if user already existed
-  const userExisted = await User.findOne({ username }).lean().exec()
+  const userExisted = await User.findOne({ username })
+    .collation({ locale: 'en', strength: 2 })
+    .lean()
+    .exec()
   // Allow updates to the original user
   if (userExisted && userExisted?._id.toString() !== id) {
     res.status(409).json({ message: 'Duplicate username' })

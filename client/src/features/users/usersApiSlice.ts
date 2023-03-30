@@ -1,5 +1,4 @@
 import { createEntityAdapter, createSelector } from '@reduxjs/toolkit'
-import { resolveAny } from 'dns'
 import { apiSlice } from '~/app/api/apiSlice'
 import { RootState } from '~/app/store'
 import { ROLE } from '~/config/roles'
@@ -20,7 +19,8 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     getUsers: builder.query({
       query: () => ({
         url: '/users',
-        validateStatus: (response, result) => response.status === 200 && !result.isError
+        validateStatus: (response: Response, result: any) =>
+          response.status === 200 && !result.isError
       }),
       transformResponse: (responseData: (User & { _id: string })[]) => {
         const loaderUsers: User[] = responseData.map(user => {

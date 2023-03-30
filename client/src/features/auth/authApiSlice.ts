@@ -22,8 +22,7 @@ export const authApiSilce = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled
-          console.log('===> Data', data)
+          await queryFulfilled
 
           dispatch(logOut([]))
           setTimeout(() => {
@@ -42,7 +41,6 @@ export const authApiSilce = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          console.log('===> Data', data)
           const { accessToken } = data
           dispatch(setCrednetials({ accessToken }))
         } catch (error) {

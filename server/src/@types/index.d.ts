@@ -5,8 +5,8 @@ export declare interface UserData {
   id?: Types.ObjectId
   username: string
   password?: string
-  roles: ROLE[]
-  active: boolean
+  roles?: ROLE[]
+  active?: boolean
 }
 
 export declare interface NoteData {

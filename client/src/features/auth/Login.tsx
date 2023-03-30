@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import usePersist from '~/hooks/usePersist'
 import { useLoginMutation } from './authApiSlice'
 import { setCrednetials } from './authSlice'
+import PulseLoader from 'react-spinners/PulseLoader'
 
 const Login = () => {
   const userRef = useRef<HTMLInputElement>(null)
@@ -56,7 +57,7 @@ const Login = () => {
 
   const errClass: string = errMsg ? 'errmsg' : 'offscreen'
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <PulseLoader color="#FFF" />
 
   const content: JSX.Element = (
     <section className="public">
